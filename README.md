@@ -31,7 +31,7 @@ You'll see that there are two app directories: `app` and `app-kotlin`. If you wi
 
 During your development, feel free to throw questions at any Android developer at Gridstone. They should be able to help you out, and don't bite often.
 
-When you've finished, give a Gridstone Android developer read access to your repository. You can also ask [@chris-horner](https://github.com/chris-horner) for access to his implementation.
+When you've finished, give a Gridstone Android developer read access to your repository. You can also ask [@chris-horner](https://github.com/chris-horner) for access to his implementation. Note that this example implementaton is using a different API, but a lot of it is still applicable.
 
 Here are the states your app will need to display. Loading the list, displaying the list, and displaying item details.
 

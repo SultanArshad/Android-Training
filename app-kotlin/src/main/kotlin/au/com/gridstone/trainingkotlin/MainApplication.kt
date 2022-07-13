@@ -14,6 +14,9 @@ import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
+const val POKEMON: String = "pokemon"
+const val SCOPE_DETAIL: String = "detailScope"
+
 val applicationModule: Module = module {
   single<Retrofit> {
     Retrofit.Builder()

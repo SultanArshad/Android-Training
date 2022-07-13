@@ -37,7 +37,7 @@ class HomeViewController : Controller(), KoinComponent, CoroutineScope {
 
   override fun onAttach(view: View) {
     val recyclerView: RecyclerView = view.findViewById(R.id.home_recyclerView)
-    val progressBar: ProgressBar = view.findViewById(R.id.home_progressBar)
+    val progressBar: ProgressBar = view.findViewById(R.id.progressBar)
     val errorImage: ImageView = view.findViewById(R.id.image_error)
     val layoutManager = LinearLayoutManager(applicationContext)
     recyclerView.layoutManager = layoutManager

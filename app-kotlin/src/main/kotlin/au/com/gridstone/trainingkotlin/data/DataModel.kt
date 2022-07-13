@@ -11,3 +11,7 @@ data class Pokemon(
   val name: String,
   val id: String = url.split("/").dropLast(1).last(),
 ) : Parcelable
+
+data class PokemonData(val stats: List<Stats>)
+
+data class Stats(val base_stat: Int)

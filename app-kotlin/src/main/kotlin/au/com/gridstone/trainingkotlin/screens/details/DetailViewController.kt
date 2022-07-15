@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import au.com.gridstone.trainingkotlin.BuildConfig.IMAGE_URL
@@ -45,10 +46,10 @@ class DetailViewController(bundle: Bundle) : Controller(bundle), KoinComponent,
   ): View = inflater.inflate(R.layout.detail_view_controller, container, false)
 
   override fun onAttach(view: View) {
+    val toolbar: Toolbar = view.findViewById(R.id.detail_toolbar)
     val detailView: LinearLayout = view.findViewById(R.id.detail_view)
     val progressBar: ProgressBar = view.findViewById(R.id.progressBar)
     val errorImageView: ImageView = view.findViewById(R.id.image_error)
-    val nameView: TextView = view.findViewById(R.id.name)
     val attackView: TextView = view.findViewById(R.id.attack_value)
     val spAttackView: TextView = view.findViewById(R.id.sp_attack_value)
     val defenseView: TextView = view.findViewById(R.id.defense_value)
@@ -57,6 +58,10 @@ class DetailViewController(bundle: Bundle) : Controller(bundle), KoinComponent,
     val hpView: TextView = view.findViewById(R.id.hp_value)
     val imageView: ImageView = view.findViewById(R.id.image)
 
+    toolbar.title = pokemon.name
+    toolbar.setNavigationOnClickListener {
+      router.popCurrentController()
+    }
 
     launch(Dispatchers.Main) {
       viewModel.state
@@ -67,7 +72,6 @@ class DetailViewController(bundle: Bundle) : Controller(bundle), KoinComponent,
           if (state !is DetailViewState.Success) return@collect
 
           //populating data on views
-          nameView.text = pokemon.name
           hpView.text = state.result.stats[0].base_stat.toString()
           attackView.text = state.result.stats[1].base_stat.toString()
           defenseView.text = state.result.stats[2].base_stat.toString()

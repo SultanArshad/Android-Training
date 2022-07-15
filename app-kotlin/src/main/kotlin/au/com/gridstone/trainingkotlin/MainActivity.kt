@@ -3,7 +3,7 @@ package au.com.gridstone.trainingkotlin
 import android.os.Bundle
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import au.com.gridstone.trainingkotlin.views.HomeViewController
+import au.com.gridstone.trainingkotlin.screens.home.HomeViewController
 import com.bluelinelabs.conductor.Conductor
 import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction

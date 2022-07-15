@@ -1,4 +1,4 @@
-package au.com.gridstone.trainingkotlin.adapters
+package au.com.gridstone.trainingkotlin.screens.home
 
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +13,7 @@ import au.com.gridstone.trainingkotlin.data.PokemonResults
 import au.com.gridstone.trainingkotlin.data.Pokemon
 import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
-import au.com.gridstone.trainingkotlin.views.DetailViewController
+import au.com.gridstone.trainingkotlin.screens.details.DetailViewController
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.squareup.picasso.Picasso
 

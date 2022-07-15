@@ -1,4 +1,4 @@
-package au.com.gridstone.trainingkotlin.views
+package au.com.gridstone.trainingkotlin.screens.details
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,16 +15,18 @@ import au.com.gridstone.trainingkotlin.POKEMON
 import au.com.gridstone.trainingkotlin.R
 import au.com.gridstone.trainingkotlin.SCOPE_DETAIL
 import au.com.gridstone.trainingkotlin.data.Pokemon
-import au.com.gridstone.trainingkotlin.viewmodels.DetailViewModel
-import au.com.gridstone.trainingkotlin.viewmodels.DetailViewState
 import com.bluelinelabs.conductor.Controller
 import com.squareup.picasso.Picasso
-import kotlinx.coroutines.*
-import org.koin.core.component.*
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
 import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
 
 class DetailViewController(bundle: Bundle) : Controller(bundle), KoinComponent,
   CoroutineScope {

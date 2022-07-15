@@ -1,4 +1,4 @@
-package au.com.gridstone.trainingkotlin
+package au.com.gridstone.trainingkotlin.api
 
 import okhttp3.Interceptor
 import okhttp3.Request

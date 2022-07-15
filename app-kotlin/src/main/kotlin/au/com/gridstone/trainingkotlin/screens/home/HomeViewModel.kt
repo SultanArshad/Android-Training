@@ -1,10 +1,10 @@
-package au.com.gridstone.trainingkotlin.viewmodels
+package au.com.gridstone.trainingkotlin.screens.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import au.com.gridstone.trainingkotlin.apiservices.PokemonService
+import au.com.gridstone.trainingkotlin.api.PokemonService
 import au.com.gridstone.trainingkotlin.data.PokemonResults
-import au.com.gridstone.trainingkotlin.viewmodels.HomeViewState.Loading
+import au.com.gridstone.trainingkotlin.screens.home.HomeViewState.Loading
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

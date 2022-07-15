@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import au.com.gridstone.trainingkotlin.R
 import au.com.gridstone.trainingkotlin.screens.home.HomeViewState.Loading
+import au.com.gridstone.trainingkotlin.screens.home.HomeViewState.Failed
 import au.com.gridstone.trainingkotlin.screens.home.HomeViewState.Success
 import com.bluelinelabs.conductor.Controller
 import kotlinx.coroutines.CoroutineScope
@@ -20,7 +21,6 @@ import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
-import kotlin.Error
 import kotlin.coroutines.CoroutineContext
 
 class HomeViewController : Controller(), KoinComponent, CoroutineScope {
@@ -42,12 +42,13 @@ class HomeViewController : Controller(), KoinComponent, CoroutineScope {
     recyclerView.layoutManager = layoutManager
     val homeListAdapter = HomeListAdapter(router)
     recyclerView.adapter = homeListAdapter
+
     launch(Dispatchers.Main) {
-      viewModel.state
+      viewModel.states
         .collect { state: HomeViewState ->
           progressBar.isVisible = state is Loading
           recyclerView.isVisible = state is Success
-          errorImage.isVisible = state is Error
+          errorImage.isVisible = state is Failed
           if (state !is Success) return@collect
           homeListAdapter.setPokemonResults(state.results)
         }

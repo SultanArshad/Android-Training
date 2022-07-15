@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import au.com.gridstone.trainingkotlin.R
 import au.com.gridstone.trainingkotlin.screens.details.DetailViewController
-import au.com.gridstone.trainingkotlin.screens.home.HomeViewEvents.ItemClick
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
@@ -37,7 +36,8 @@ class HomeViewController : Controller(), KoinComponent, CoroutineScope {
     launch {
       presenter.events.collect { event: HomeViewEvents ->
         when (event) {
-          is ItemClick -> router.pushController(
+          is HomeViewEvents.Refresh -> launch(Dispatchers.IO) { viewModel.getAllPokemon() }
+          is HomeViewEvents.ItemClick -> router.pushController(
             RouterTransaction.with(DetailViewController(event.pokemon))
               .pushChangeHandler(HorizontalChangeHandler())
               .popChangeHandler(HorizontalChangeHandler())

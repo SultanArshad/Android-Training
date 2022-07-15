@@ -6,6 +6,7 @@ import au.com.gridstone.trainingkotlin.api.PokemonService
 import au.com.gridstone.trainingkotlin.data.PokemonData
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -21,12 +22,14 @@ sealed class DetailViewState {
 
 sealed class DetailViewEvent {
   object BackClick : DetailViewEvent()
+  object Refresh : DetailViewEvent()
 }
 
 class DetailViewModel(id: String) : ViewModel(), KoinComponent {
 
   private val stateFlow: MutableStateFlow<DetailViewState> =
     MutableStateFlow(DetailViewState.Loading)
+
   val states: StateFlow<DetailViewState> = stateFlow
   private val webservice: PokemonService = get()
 
@@ -34,7 +37,8 @@ class DetailViewModel(id: String) : ViewModel(), KoinComponent {
     viewModelScope.launch { getPokemonDetail(id) }
   }
 
-  private suspend fun getPokemonDetail(id: String) {
+  suspend fun getPokemonDetail(id: String) {
+    stateFlow.value = DetailViewState.Loading
     try {
       val response: Response<PokemonData> = webservice.getPokemonDetails(id)
       val result: PokemonData? = response.body()

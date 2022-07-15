@@ -7,6 +7,7 @@ import au.com.gridstone.trainingkotlin.data.PokemonResults
 import au.com.gridstone.trainingkotlin.screens.home.HomeViewState.Loading
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -16,6 +17,7 @@ import retrofit2.Response
 
 sealed class HomeViewState {
   object Loading : HomeViewState()
+  object Refreshing : HomeViewState()
   object Failed : HomeViewState()
   data class Success(val results: PokemonResults) : HomeViewState()
 }
@@ -26,10 +28,12 @@ class HomeViewModel() : ViewModel(), KoinComponent {
   private val webservice: PokemonService = get()
 
   init {
-    viewModelScope.launch { getAllPokemon() }
+    viewModelScope.launch { getAllPokemon(false) }
   }
 
-  private suspend fun getAllPokemon() {
+  suspend fun getAllPokemon(isRefreshing: Boolean) {
+    if (isRefreshing) stateFlow.value = HomeViewState.Refreshing
+    delay(500)
     try {
       val response: Response<PokemonResults> = webservice.getPokemons()
       val results: PokemonResults? = response.body()

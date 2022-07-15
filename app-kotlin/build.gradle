@@ -46,6 +46,7 @@ android {
 dependencies {
   implementation 'androidx.appcompat:appcompat:1.4.2'
   implementation 'com.google.android.material:material:1.6.1'
+  implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 
 //  Support libraries
   implementation 'androidx.appcompat:appcompat:1.4.2'
@@ -54,7 +55,7 @@ dependencies {
 //  Conductor
   implementation 'com.bluelinelabs:conductor:3.1.5'
 
-// Lifecycle-aware Controllers (architecture components):
+//  Lifecycle-aware Controllers (architecture components):
   implementation 'com.bluelinelabs:conductor-archlifecycle:3.1.5'
 
 //  For retrofit / networking
@@ -65,10 +66,10 @@ dependencies {
   implementation 'com.squareup.moshi:moshi-kotlin:1.13.0'
 
 //  Kotlin Coroutines
-  implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.3'
-  testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.3'
+  implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4'
+  testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
 
-//  Picasso
+//  picasso
   implementation 'com.squareup.picasso:picasso:2.8'
 
 //  Koin for Kotlin apps
@@ -77,7 +78,6 @@ dependencies {
 
 //  Koin testing tools
   testImplementation "io.insert-koin:koin-test:3.2.0"
-//  Needed JUnit version
   testImplementation "io.insert-koin:koin-test-junit4:3.2.0"
 
 //  Mockk Test

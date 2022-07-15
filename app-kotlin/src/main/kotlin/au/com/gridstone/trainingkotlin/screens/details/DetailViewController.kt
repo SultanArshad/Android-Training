@@ -11,11 +11,16 @@ import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import au.com.gridstone.trainingkotlin.BuildConfig.IMAGE_URL
 import au.com.gridstone.trainingkotlin.POKEMON
 import au.com.gridstone.trainingkotlin.R
 import au.com.gridstone.trainingkotlin.SCOPE_DETAIL
 import au.com.gridstone.trainingkotlin.data.Pokemon
+import au.com.gridstone.trainingkotlin.screens.details.DetailViewState.Failed
+import au.com.gridstone.trainingkotlin.screens.details.DetailViewState.Loading
+import au.com.gridstone.trainingkotlin.screens.details.DetailViewState.Refreshing
+import au.com.gridstone.trainingkotlin.screens.details.DetailViewState.Success
 import com.bluelinelabs.conductor.Controller
 import com.squareup.picasso.Picasso
 import org.koin.core.parameter.parametersOf
@@ -46,6 +51,7 @@ class DetailViewController(bundle: Bundle) : Controller(bundle), KoinComponent,
   ): View = inflater.inflate(R.layout.detail_view_controller, container, false)
 
   override fun onAttach(view: View) {
+    val refreshView: SwipeRefreshLayout = view.findViewById(R.id.swipe_refresh)
     val toolbar: Toolbar = view.findViewById(R.id.detail_toolbar)
     val detailView: LinearLayout = view.findViewById(R.id.detail_view)
     val progressBar: ProgressBar = view.findViewById(R.id.progressBar)
@@ -63,13 +69,25 @@ class DetailViewController(bundle: Bundle) : Controller(bundle), KoinComponent,
       router.popCurrentController()
     }
 
+    refreshView.setOnRefreshListener {
+      launch {
+        viewModel.getPokemonDetail(pokemon.id, true)
+      }
+    }
+
     launch(Dispatchers.Main) {
       viewModel.states
         .collect { state: DetailViewState ->
-          progressBar.isVisible = state is DetailViewState.Loading
-          detailView.isVisible = state is DetailViewState.Success
-          errorImageView.isVisible = state is DetailViewState.Failed
-          if (state !is DetailViewState.Success) return@collect
+          if (state is Refreshing || state is Loading) {
+            refreshView.isRefreshing = true
+            progressBar.isVisible = true
+          } else {
+            refreshView.isRefreshing = false
+            progressBar.isVisible = false
+          }
+          detailView.isVisible = state is Success
+          errorImageView.isVisible = state is Failed
+          if (state !is Success) return@collect
 
           //populating data on views
           hpView.text = state.result.stats[0].base_stat.toString()

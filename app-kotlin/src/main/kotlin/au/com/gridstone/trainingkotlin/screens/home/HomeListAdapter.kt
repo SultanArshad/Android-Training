@@ -36,6 +36,7 @@ internal class HomeListAdapter(private val router: Router) :
   override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
     val item: Pokemon = itemsList[position]
     holder.name.text = item.name
+
     loadImage(holder, item)
     holder.itemView.setOnClickListener {
       router.pushController(RouterTransaction.with(

@@ -9,9 +9,11 @@ import android.widget.ProgressBar
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import au.com.gridstone.trainingkotlin.R
 import au.com.gridstone.trainingkotlin.screens.home.HomeViewState.Loading
 import au.com.gridstone.trainingkotlin.screens.home.HomeViewState.Failed
+import au.com.gridstone.trainingkotlin.screens.home.HomeViewState.Refreshing
 import au.com.gridstone.trainingkotlin.screens.home.HomeViewState.Success
 import com.bluelinelabs.conductor.Controller
 import kotlinx.coroutines.CoroutineScope
@@ -26,8 +28,7 @@ import kotlin.coroutines.CoroutineContext
 class HomeViewController : Controller(), KoinComponent, CoroutineScope {
 
   private val viewModel: HomeViewModel = get()
-  override val coroutineContext: CoroutineContext = Dispatchers.IO + SupervisorJob()
-
+  override val coroutineContext: CoroutineContext = Dispatchers.Main + SupervisorJob()
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup,
@@ -35,22 +36,36 @@ class HomeViewController : Controller(), KoinComponent, CoroutineScope {
   ): View = inflater.inflate(R.layout.home_view_controller, container, false)
 
   override fun onAttach(view: View) {
+    val refreshView: SwipeRefreshLayout = view.findViewById(R.id.swipe_refresh)
     val recyclerView: RecyclerView = view.findViewById(R.id.home_recyclerView)
     val progressBar: ProgressBar = view.findViewById(R.id.progressBar)
-    val errorImage: ImageView = view.findViewById(R.id.image_error)
+    val errorImageView: ImageView = view.findViewById(R.id.image_error)
     val layoutManager = LinearLayoutManager(applicationContext)
-    recyclerView.layoutManager = layoutManager
-    val homeListAdapter = HomeListAdapter(router)
-    recyclerView.adapter = homeListAdapter
+    val adapter = HomeListAdapter(router)
 
-    launch(Dispatchers.Main) {
+    recyclerView.layoutManager = layoutManager
+    recyclerView.adapter = adapter
+
+    refreshView.setOnRefreshListener {
+      launch {
+        viewModel.getAllPokemon(true)
+      }
+    }
+
+    launch {
       viewModel.states
         .collect { state: HomeViewState ->
-          progressBar.isVisible = state is Loading
+          if (state is Refreshing || state is Loading) {
+            refreshView.isRefreshing = true
+            progressBar.isVisible = true
+          } else {
+            refreshView.isRefreshing = false
+            progressBar.isVisible = false
+          }
           recyclerView.isVisible = state is Success
-          errorImage.isVisible = state is Failed
+          errorImageView.isVisible = state is Failed
           if (state !is Success) return@collect
-          homeListAdapter.setPokemonResults(state.results)
+          adapter.setPokemonResults(state.results)
         }
     }
   }

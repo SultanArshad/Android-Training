@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import au.com.gridstone.trainingkotlin.api.PokemonService
 import au.com.gridstone.trainingkotlin.data.PokemonData
-import au.com.gridstone.trainingkotlin.screens.home.HomeViewState
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -16,6 +16,7 @@ import retrofit2.Response
 
 sealed class DetailViewState {
   object Loading : DetailViewState()
+  object Refreshing : DetailViewState()
   object Failed : DetailViewState()
   data class Success(val result: PokemonData) : DetailViewState()
 }
@@ -24,14 +25,18 @@ class DetailViewModel(id: String) : ViewModel(), KoinComponent {
 
   private val stateFlow: MutableStateFlow<DetailViewState> =
     MutableStateFlow(DetailViewState.Loading)
+
   val states: StateFlow<DetailViewState> = stateFlow
   private val webservice: PokemonService = get()
 
   init {
-    viewModelScope.launch { getPokemonDetail(id) }
+    viewModelScope.launch { getPokemonDetail(id, false) }
   }
 
-  private suspend fun getPokemonDetail(id: String) {
+  suspend fun getPokemonDetail(id: String, isRefreshing: Boolean) {
+    stateFlow.value = DetailViewState.Loading
+    if (isRefreshing) stateFlow.value = DetailViewState.Refreshing
+    delay(500)
     try {
       val response: Response<PokemonData> = webservice.getPokemonDetails(id)
       val result: PokemonData? = response.body()

@@ -1,4 +1,4 @@
-package au.com.gridstone.trainingkotlin.views
+package au.com.gridstone.trainingkotlin.screens.home
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,10 +10,8 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import au.com.gridstone.trainingkotlin.R
-import au.com.gridstone.trainingkotlin.adapters.HomeListAdapter
-import au.com.gridstone.trainingkotlin.viewmodels.HomeViewModel
-import au.com.gridstone.trainingkotlin.viewmodels.HomeViewState
-import au.com.gridstone.trainingkotlin.viewmodels.HomeViewState.*
+import au.com.gridstone.trainingkotlin.screens.home.HomeViewState.Loading
+import au.com.gridstone.trainingkotlin.screens.home.HomeViewState.Success
 import com.bluelinelabs.conductor.Controller
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,6 +20,7 @@ import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
+import kotlin.Error
 import kotlin.coroutines.CoroutineContext
 
 class HomeViewController : Controller(), KoinComponent, CoroutineScope {

@@ -1,4 +1,4 @@
-package au.com.gridstone.trainingkotlin.apiservices
+package au.com.gridstone.trainingkotlin.api
 
 import au.com.gridstone.trainingkotlin.data.PokemonData
 import au.com.gridstone.trainingkotlin.data.PokemonResults

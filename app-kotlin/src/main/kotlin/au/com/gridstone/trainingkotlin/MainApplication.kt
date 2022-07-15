@@ -2,9 +2,10 @@ package au.com.gridstone.trainingkotlin
 
 import android.app.Application
 import au.com.gridstone.trainingkotlin.BuildConfig.BASAE_URL
-import au.com.gridstone.trainingkotlin.apiservices.PokemonService
-import au.com.gridstone.trainingkotlin.viewmodels.DetailViewModel
-import au.com.gridstone.trainingkotlin.viewmodels.HomeViewModel
+import au.com.gridstone.trainingkotlin.api.LoggingInterceptor
+import au.com.gridstone.trainingkotlin.api.PokemonService
+import au.com.gridstone.trainingkotlin.screens.details.DetailViewModel
+import au.com.gridstone.trainingkotlin.screens.home.HomeViewModel
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.OkHttpClient

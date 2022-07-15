@@ -3,6 +3,7 @@ package au.com.gridstone.trainingkotlin
 import android.app.Application
 import au.com.gridstone.trainingkotlin.BuildConfig.BASAE_URL
 import au.com.gridstone.trainingkotlin.apiservices.PokemonService
+import au.com.gridstone.trainingkotlin.viewmodels.DetailViewModel
 import au.com.gridstone.trainingkotlin.viewmodels.HomeViewModel
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -10,6 +11,7 @@ import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.core.module.Module
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -42,6 +44,11 @@ val applicationModule: Module = module {
   }
 
   single { HomeViewModel() }
+
+  scope(named(SCOPE_DETAIL)) {
+    scoped { (id: String) -> DetailViewModel(id) }
+  }
+
 }
 
 class MainApplication : Application() {

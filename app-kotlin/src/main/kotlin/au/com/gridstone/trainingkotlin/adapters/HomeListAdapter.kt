@@ -12,6 +12,9 @@ import au.com.gridstone.trainingkotlin.R
 import au.com.gridstone.trainingkotlin.data.PokemonResults
 import au.com.gridstone.trainingkotlin.data.Pokemon
 import com.bluelinelabs.conductor.Router
+import com.bluelinelabs.conductor.RouterTransaction
+import au.com.gridstone.trainingkotlin.views.DetailViewController
+import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.squareup.picasso.Picasso
 
 internal class HomeListAdapter(private val router: Router) :
@@ -35,7 +38,11 @@ internal class HomeListAdapter(private val router: Router) :
     holder.name.text = item.name
     loadImage(holder, item)
     holder.itemView.setOnClickListener {
-     TODO("WORKING ON THIS IN NEXT PR #4")
+      router.pushController(RouterTransaction.with(
+        DetailViewController(item))
+        .pushChangeHandler(HorizontalChangeHandler())
+        .popChangeHandler(HorizontalChangeHandler())
+      )
     }
   }
 

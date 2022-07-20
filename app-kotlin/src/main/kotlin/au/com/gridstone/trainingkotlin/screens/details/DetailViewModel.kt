@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import au.com.gridstone.trainingkotlin.api.PokemonService
 import au.com.gridstone.trainingkotlin.data.PokemonData
-import au.com.gridstone.trainingkotlin.screens.home.HomeViewState
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -31,7 +31,8 @@ class DetailViewModel(id: String) : ViewModel(), KoinComponent {
     viewModelScope.launch { getPokemonDetail(id) }
   }
 
-  private suspend fun getPokemonDetail(id: String) {
+  suspend fun getPokemonDetail(id: String) {
+    stateFlow.value = DetailViewState.Loading
     try {
       val response: Response<PokemonData> = webservice.getPokemonDetails(id)
       val result: PokemonData? = response.body()

@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import au.com.gridstone.trainingkotlin.BuildConfig.IMAGE_URL
 import au.com.gridstone.trainingkotlin.POKEMON
 import au.com.gridstone.trainingkotlin.R
@@ -46,6 +47,7 @@ class DetailViewController(bundle: Bundle) : Controller(bundle), KoinComponent,
   ): View = inflater.inflate(R.layout.detail_view_controller, container, false)
 
   override fun onAttach(view: View) {
+    val refreshView: SwipeRefreshLayout = view.findViewById(R.id.swipe_refresh)
     val toolbar: Toolbar = view.findViewById(R.id.detail_toolbar)
     val detailView: LinearLayout = view.findViewById(R.id.detail_view)
     val progressBar: ProgressBar = view.findViewById(R.id.progressBar)
@@ -61,6 +63,13 @@ class DetailViewController(bundle: Bundle) : Controller(bundle), KoinComponent,
     toolbar.title = pokemon.name
     toolbar.setNavigationOnClickListener {
       router.popCurrentController()
+    }
+
+    refreshView.setOnRefreshListener {
+      launch {
+        refreshView.isRefreshing = false
+        viewModel.getPokemonDetail(pokemon.id)
+      }
     }
 
     launch(Dispatchers.Main) {

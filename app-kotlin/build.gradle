@@ -48,6 +48,9 @@ dependencies {
   implementation 'com.google.android.material:material:1.6.1'
   implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 
+// Corind
+  implementation 'ru.ldralighieri.corbind:corbind-swiperefreshlayout:1.5.5'
+
 //  Support libraries
   implementation 'androidx.appcompat:appcompat:1.4.2'
   implementation 'androidx.recyclerview:recyclerview:1.2.1'
@@ -66,8 +69,8 @@ dependencies {
   implementation 'com.squareup.moshi:moshi-kotlin:1.13.0'
 
 //  Kotlin Coroutines
-  implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.3'
-  testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.3'
+  implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4'
+  testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
 
 //  Picasso
   implementation 'com.squareup.picasso:picasso:2.8'

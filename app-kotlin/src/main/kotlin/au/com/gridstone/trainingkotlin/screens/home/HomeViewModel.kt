@@ -3,6 +3,7 @@ package au.com.gridstone.trainingkotlin.screens.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import au.com.gridstone.trainingkotlin.api.PokemonService
+import au.com.gridstone.trainingkotlin.data.Pokemon
 import au.com.gridstone.trainingkotlin.data.PokemonResults
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -18,6 +19,11 @@ sealed class HomeViewState {
   object Loading : HomeViewState()
   object Failed : HomeViewState()
   data class Success(val results: PokemonResults) : HomeViewState()
+}
+
+sealed class HomeViewEvents {
+  object Refresh : HomeViewEvents()
+  data class ItemClick(val pokemon: Pokemon) : HomeViewEvents()
 }
 
 class HomeViewModel() : ViewModel(), KoinComponent {
@@ -47,4 +53,5 @@ class HomeViewModel() : ViewModel(), KoinComponent {
       stateFlow.value = HomeViewState.Failed
     }
   }
+
 }

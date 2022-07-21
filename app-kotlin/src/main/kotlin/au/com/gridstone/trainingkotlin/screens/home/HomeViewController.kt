@@ -4,18 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.ProgressBar
-import androidx.core.view.isVisible
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import au.com.gridstone.trainingkotlin.R
-import au.com.gridstone.trainingkotlin.screens.home.HomeViewState.Loading
-import au.com.gridstone.trainingkotlin.screens.home.HomeViewState.Failed
-import au.com.gridstone.trainingkotlin.screens.home.HomeViewState.Success
+import au.com.gridstone.trainingkotlin.screens.details.DetailViewController
+import au.com.gridstone.trainingkotlin.screens.home.HomeViewEvents.ItemClick
+import au.com.gridstone.trainingkotlin.screens.home.HomeViewEvents.Refresh
 import com.bluelinelabs.conductor.Controller
+import com.bluelinelabs.conductor.RouterTransaction
+import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -24,11 +19,12 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.withContext
 
 class HomeViewController : Controller(), KoinComponent, CoroutineScope {
 
   private val viewModel: HomeViewModel = get()
-  override val coroutineContext: CoroutineContext = Dispatchers.IO + SupervisorJob()
+  override val coroutineContext: CoroutineContext = Dispatchers.Main + SupervisorJob()
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup,
@@ -36,36 +32,32 @@ class HomeViewController : Controller(), KoinComponent, CoroutineScope {
   ): View = inflater.inflate(R.layout.home_view_controller, container, false)
 
   override fun onAttach(view: View) {
-    val refreshView: SwipeRefreshLayout = view.findViewById(R.id.swipe_refresh)
-    val recyclerView: RecyclerView = view.findViewById(R.id.home_recyclerView)
-    val progressBar: ProgressBar = view.findViewById(R.id.progressBar)
-    val errorImage: ImageView = view.findViewById(R.id.image_error)
-    val layoutManager = LinearLayoutManager(applicationContext)
-    recyclerView.layoutManager = layoutManager
-    val homeListAdapter = HomeListAdapter(router)
-    recyclerView.adapter = homeListAdapter
+    val presenter = HomeViewPresenter(view)
 
-    refreshView.setOnRefreshListener {
-      launch {
-        refreshView.isRefreshing = false
-        viewModel.getAllPokemon()
+    launch {
+      presenter.events.collect { event: HomeViewEvents ->
+        when (event) {
+          is ItemClick -> router.pushController(RouterTransaction.with(
+            DetailViewController(event.pokemon))
+            .pushChangeHandler(HorizontalChangeHandler())
+            .popChangeHandler(HorizontalChangeHandler())
+          )
+
+          Refresh -> withContext(Dispatchers.IO) { viewModel.getAllPokemon() }
+        }
       }
     }
 
-    launch(Dispatchers.Main) {
+    launch {
       viewModel.states
         .collect { state: HomeViewState ->
-          progressBar.isVisible = state is Loading
-          recyclerView.isVisible = state is Success
-          errorImage.isVisible = state is Failed
-          if (state !is Success) return@collect
-          homeListAdapter.setPokemonResults(state.results)
+          presenter.display(state)
         }
     }
   }
 
   override fun onDetach(view: View) {
     coroutineContext.cancelChildren()
-    (view.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh)).isRefreshing = false
   }
+
 }

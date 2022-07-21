@@ -64,11 +64,11 @@ class DetailViewController(bundle: Bundle) : Controller(bundle), KoinComponent,
     }
 
     launch(Dispatchers.Main) {
-      viewModel.state
+      viewModel.states
         .collect { state: DetailViewState ->
           progressBar.isVisible = state is DetailViewState.Loading
           detailView.isVisible = state is DetailViewState.Success
-          errorImageView.isVisible = state is DetailViewState.Error
+          errorImageView.isVisible = state is DetailViewState.Failed
           if (state !is DetailViewState.Success) return@collect
 
           //populating data on views

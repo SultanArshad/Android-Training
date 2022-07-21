@@ -19,6 +19,7 @@ android {
   defaultConfig {
     applicationId 'au.com.gridstone.trainingkotlin'
     minSdkVersion 21
+    //noinspection OldTargetApi
     targetSdkVersion 32
     versionCode 1
     versionName '1.0'
@@ -65,11 +66,20 @@ dependencies {
 
 //  Kotlin Coroutines
   implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.3'
+  testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.3'
 
-//  picasso
+//  Picasso
   implementation 'com.squareup.picasso:picasso:2.8'
 
 //  Koin for Kotlin apps
   implementation 'io.insert-koin:koin-core:3.2.0'
   implementation 'io.insert-koin:koin-android:3.2.0'
+
+//  Koin testing tools
+  testImplementation "io.insert-koin:koin-test:3.2.0"
+//  Needed JUnit version
+  testImplementation "io.insert-koin:koin-test-junit4:3.2.0"
+
+//  Mockk Test
+  testImplementation "io.mockk:mockk:1.12.4"
 }

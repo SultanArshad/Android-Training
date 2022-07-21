@@ -4,6 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import au.com.gridstone.trainingkotlin.api.PokemonService
 import au.com.gridstone.trainingkotlin.data.PokemonData
+import au.com.gridstone.trainingkotlin.screens.home.HomeViewState
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -13,7 +16,7 @@ import retrofit2.Response
 
 sealed class DetailViewState {
   object Loading : DetailViewState()
-  object Error : DetailViewState()
+  object Failed : DetailViewState()
   data class Success(val result: PokemonData) : DetailViewState()
 }
 
@@ -21,7 +24,7 @@ class DetailViewModel(id: String) : ViewModel(), KoinComponent {
 
   private val stateFlow: MutableStateFlow<DetailViewState> =
     MutableStateFlow(DetailViewState.Loading)
-  val state: StateFlow<DetailViewState> = stateFlow
+  val states: StateFlow<DetailViewState> = stateFlow
   private val webservice: PokemonService = get()
 
   init {
@@ -35,10 +38,14 @@ class DetailViewModel(id: String) : ViewModel(), KoinComponent {
       if (response.isSuccessful && result != null) {
         stateFlow.value = DetailViewState.Success(result)
       } else {
-        stateFlow.value = DetailViewState.Error
+        stateFlow.value = DetailViewState.Failed
       }
-    } catch (t: Throwable) {
-      stateFlow.value = DetailViewState.Error
+    } catch (e: IllegalArgumentException) {
+      stateFlow.value = DetailViewState.Failed
+    } catch (e: UnknownHostException) {
+      stateFlow.value = DetailViewState.Failed
+    } catch (e: SocketTimeoutException) {
+      stateFlow.value = DetailViewState.Failed
     }
   }
 }

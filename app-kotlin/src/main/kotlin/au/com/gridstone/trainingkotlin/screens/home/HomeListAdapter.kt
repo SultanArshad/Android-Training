@@ -11,15 +11,16 @@ import au.com.gridstone.trainingkotlin.BuildConfig.IMAGE_URL
 import au.com.gridstone.trainingkotlin.R
 import au.com.gridstone.trainingkotlin.data.PokemonResults
 import au.com.gridstone.trainingkotlin.data.Pokemon
-import com.bluelinelabs.conductor.Router
-import com.bluelinelabs.conductor.RouterTransaction
-import au.com.gridstone.trainingkotlin.screens.details.DetailViewController
-import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.receiveAsFlow
 
-internal class HomeListAdapter(private val router: Router) :
-  RecyclerView.Adapter<HomeListAdapter.MyViewHolder>() {
+internal class HomeListAdapter() : RecyclerView.Adapter<HomeListAdapter.MyViewHolder>() {
+
   private var itemsList: List<Pokemon> = emptyList()
+  private val eventsChannel: Channel<HomeViewEvents.ItemClick> = Channel()
+  val events: Flow<HomeViewEvents> = eventsChannel.receiveAsFlow()
 
   internal class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     val image: ImageView = view.findViewById(R.id.image_list)
@@ -37,12 +38,10 @@ internal class HomeListAdapter(private val router: Router) :
     val item: Pokemon = itemsList[position]
     holder.name.text = item.name
     loadImage(holder, item)
+
     holder.itemView.setOnClickListener {
-      router.pushController(RouterTransaction.with(
-        DetailViewController(item))
-        .pushChangeHandler(HorizontalChangeHandler())
-        .popChangeHandler(HorizontalChangeHandler())
-      )
+      val event = HomeViewEvents.ItemClick(item)
+      eventsChannel.trySend(event)
     }
   }
 

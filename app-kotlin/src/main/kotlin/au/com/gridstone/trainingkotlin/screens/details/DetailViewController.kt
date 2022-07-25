@@ -16,7 +16,11 @@ import au.com.gridstone.trainingkotlin.POKEMON
 import au.com.gridstone.trainingkotlin.R
 import au.com.gridstone.trainingkotlin.SCOPE_DETAIL
 import au.com.gridstone.trainingkotlin.data.Pokemon
+import au.com.gridstone.trainingkotlin.screens.details.DetailViewEvent.BackClick
+import au.com.gridstone.trainingkotlin.screens.home.HomeViewState
 import com.bluelinelabs.conductor.Controller
+import com.bluelinelabs.conductor.RouterTransaction
+import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.squareup.picasso.Picasso
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
@@ -37,7 +41,7 @@ class DetailViewController(bundle: Bundle) : Controller(bundle), KoinComponent,
 
   private val scope: Scope = getKoin().getOrCreateScope(pokemon.id, named(SCOPE_DETAIL))
   private val viewModel: DetailViewModel = scope.get { parametersOf(pokemon.id) }
-  override val coroutineContext: CoroutineContext = Dispatchers.IO + SupervisorJob()
+  override val coroutineContext: CoroutineContext = Dispatchers.Main + SupervisorJob()
 
   override fun onCreateView(
     inflater: LayoutInflater,
@@ -46,44 +50,20 @@ class DetailViewController(bundle: Bundle) : Controller(bundle), KoinComponent,
   ): View = inflater.inflate(R.layout.detail_view_controller, container, false)
 
   override fun onAttach(view: View) {
-    val toolbar: Toolbar = view.findViewById(R.id.detail_toolbar)
-    val detailView: LinearLayout = view.findViewById(R.id.detail_view)
-    val progressBar: ProgressBar = view.findViewById(R.id.progressBar)
-    val errorImageView: ImageView = view.findViewById(R.id.image_error)
-    val attackView: TextView = view.findViewById(R.id.attack_value)
-    val spAttackView: TextView = view.findViewById(R.id.sp_attack_value)
-    val defenseView: TextView = view.findViewById(R.id.defense_value)
-    val spDefenseView: TextView = view.findViewById(R.id.sp_defense_value)
-    val speedView: TextView = view.findViewById(R.id.speed_value)
-    val hpView: TextView = view.findViewById(R.id.hp_value)
-    val imageView: ImageView = view.findViewById(R.id.image)
+    val presenter = DetailViewPresenter(view, pokemon)
 
-    toolbar.title = pokemon.name
-    toolbar.setNavigationOnClickListener {
-      router.popCurrentController()
+    launch {
+      presenter.events.collect { event: DetailViewEvent ->
+        when (event) {
+          is BackClick -> router.popCurrentController()
+        }
+      }
     }
 
-    launch(Dispatchers.Main) {
+    launch {
       viewModel.states
         .collect { state: DetailViewState ->
-          progressBar.isVisible = state is DetailViewState.Loading
-          detailView.isVisible = state is DetailViewState.Success
-          errorImageView.isVisible = state is DetailViewState.Failed
-          if (state !is DetailViewState.Success) return@collect
-
-          //populating data on views
-          hpView.text = state.result.stats[0].base_stat.toString()
-          attackView.text = state.result.stats[1].base_stat.toString()
-          defenseView.text = state.result.stats[2].base_stat.toString()
-          spAttackView.text = state.result.stats[3].base_stat.toString()
-          spDefenseView.text = state.result.stats[4].base_stat.toString()
-          speedView.text = state.result.stats[5].base_stat.toString()
-
-          Picasso.get()
-            .load("${IMAGE_URL}/${pokemon.id}.png")
-            .placeholder(R.drawable.ic_placeholder)
-            .fit()
-            .into(imageView)
+          presenter.display(state)
         }
     }
   }

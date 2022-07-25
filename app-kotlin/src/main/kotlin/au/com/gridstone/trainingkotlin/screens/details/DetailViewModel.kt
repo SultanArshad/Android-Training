@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import au.com.gridstone.trainingkotlin.api.PokemonService
 import au.com.gridstone.trainingkotlin.data.PokemonData
-import au.com.gridstone.trainingkotlin.screens.home.HomeViewState
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,6 +17,10 @@ sealed class DetailViewState {
   object Loading : DetailViewState()
   object Failed : DetailViewState()
   data class Success(val result: PokemonData) : DetailViewState()
+}
+
+sealed class DetailViewEvent {
+  object BackClick : DetailViewEvent()
 }
 
 class DetailViewModel(id: String) : ViewModel(), KoinComponent {

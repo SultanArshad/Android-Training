@@ -63,7 +63,11 @@ class HomeDomainTests : KoinTest {
     coEvery { service.getPokemons() } returns
         Response.success(PokemonResults(testPokemon))
 
-    val (loading: HomeViewState, success: HomeViewState) = viewModel.states.take(2).toList()
+    val (
+      loading: HomeViewState,
+      success: HomeViewState,
+    ) = viewModel.states.take(2).toList()
+
     assertEquals(Loading, loading)
     assertEquals(Success(PokemonResults(testPokemon)), success)
   }
@@ -73,7 +77,11 @@ class HomeDomainTests : KoinTest {
     coEvery { service.getPokemons() } returns
         Response.error(500, ResponseBody.create(null, "Error"))
 
-    val (loading: HomeViewState, fail: HomeViewState) = viewModel.states.take(2).toList()
+    val (
+      loading: HomeViewState,
+      fail: HomeViewState,
+    ) = viewModel.states.take(2).toList()
+
     assertEquals(Loading, loading)
     assertEquals(Failed, fail)
   }

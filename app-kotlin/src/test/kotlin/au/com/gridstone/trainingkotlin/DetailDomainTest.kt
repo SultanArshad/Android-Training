@@ -66,8 +66,11 @@ class DetailDomainTest : KoinTest {
     coEvery { service.getPokemonDetails(testPokemonId) } returns
         Response.success(PokemonData(testPokemonDataStats))
 
-    val (loading: DetailViewState, success: DetailViewState) = viewModel.states.take(2)
-      .toList()
+    val (
+      loading: DetailViewState,
+      success: DetailViewState,
+    ) = viewModel.states.take(2).toList()
+
     assertEquals(Loading, loading)
     assertEquals(Success(PokemonData(testPokemonDataStats)), success)
   }
@@ -77,9 +80,12 @@ class DetailDomainTest : KoinTest {
     coEvery { service.getPokemonDetails(testPokemonId) } returns
         Response.error(500, ResponseBody.create(null, "Error"))
 
-    val (loading: DetailViewState, fail: DetailViewState) = viewModel.states.take(2).toList()
+    val (
+      loading: DetailViewState,
+      fail: DetailViewState,
+    ) = viewModel.states.take(2).toList()
+
     assertEquals(Loading, loading)
     assertEquals(Failed, fail)
   }
-
 }

@@ -14,11 +14,18 @@
             app:title="Pokemon" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/loading_view" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/home_recyclerView"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?actionBarSize" />
+        android:layout_marginTop="?actionBarSize">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/home_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <include layout="@layout/loading_view" />
 </FrameLayout>

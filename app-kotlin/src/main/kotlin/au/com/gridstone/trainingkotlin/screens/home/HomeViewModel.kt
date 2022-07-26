@@ -7,6 +7,7 @@ import au.com.gridstone.trainingkotlin.data.Pokemon
 import au.com.gridstone.trainingkotlin.data.PokemonResults
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -22,10 +23,14 @@ sealed class HomeViewState {
 
 sealed class HomeViewEvents {
   data class ItemClick(val pokemon: Pokemon) : HomeViewEvents()
+  object Refresh : HomeViewEvents()
 }
 
 class HomeViewModel() : ViewModel(), KoinComponent {
-  private val stateFlow: MutableStateFlow<HomeViewState> = MutableStateFlow(HomeViewState.Loading)
+
+  private val stateFlow: MutableStateFlow<HomeViewState> =
+    MutableStateFlow(HomeViewState.Loading)
+
   val states: StateFlow<HomeViewState> = stateFlow
   private val webservice: PokemonService = get()
 

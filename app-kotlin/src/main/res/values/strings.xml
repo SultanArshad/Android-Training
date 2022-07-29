@@ -1,6 +1,7 @@
 <resources>
   <string name="app_name">Training kotlin</string>
   <string name="attack">Attack</string>
+  <string name="pokemon">Pokemon</string>
   <string name="image_of_the_pokemon">Image of the pokemon</string>
   <string name="pokemon_name">Pokemon name</string>
 </resources>

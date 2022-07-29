@@ -3,11 +3,11 @@ package au.com.gridstone.trainingkotlin.screens.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import au.com.gridstone.trainingkotlin.api.PokemonService
-import au.com.gridstone.trainingkotlin.data.Pokemon
 import au.com.gridstone.trainingkotlin.data.PokemonResults
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
-import kotlinx.coroutines.delay
+import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -21,21 +21,18 @@ sealed class HomeViewState {
   data class Success(val results: PokemonResults) : HomeViewState()
 }
 
-sealed class HomeViewEvents {
-  data class ItemClick(val pokemon: Pokemon) : HomeViewEvents()
-  object Refresh : HomeViewEvents()
-}
+class HomeViewModel() : ViewModel(), KoinComponent, CoroutineScope {
 
-class HomeViewModel() : ViewModel(), KoinComponent {
+  override val coroutineContext: CoroutineContext = viewModelScope.coroutineContext
 
+  private val webservice: PokemonService = get()
   private val stateFlow: MutableStateFlow<HomeViewState> =
     MutableStateFlow(HomeViewState.Loading)
 
   val states: StateFlow<HomeViewState> = stateFlow
-  private val webservice: PokemonService = get()
 
   init {
-    viewModelScope.launch { getAllPokemon() }
+    launch { getAllPokemon() }
   }
 
   suspend fun getAllPokemon() {
@@ -56,4 +53,5 @@ class HomeViewModel() : ViewModel(), KoinComponent {
       stateFlow.value = HomeViewState.Failed
     }
   }
+
 }
